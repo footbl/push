@@ -3,6 +3,7 @@ async = require('async');
 request = require('request');
 
 module.exports = function (token, opts, next) {
+  if (!opts.device) return next();
   async.waterfall([function (next) {
     request.post('https://api.zeropush.com/register', {'form' : {
       'auth_token'   : token,
@@ -15,5 +16,7 @@ module.exports = function (token, opts, next) {
       'alert'           : JSON.stringify(opts.alert),
       'sound'           : opts.sound
     }}, next);
-  }], next);
+  }], function () {
+    next();
+  });
 };
